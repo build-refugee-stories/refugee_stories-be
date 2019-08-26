@@ -19,7 +19,7 @@ router.get('/public', async (req, res) => {
 })
 
 //post a story
-router.post('/public', validateStory, async (req, res) => {
+router.post('/public', async (req, res) => {
   const story = req.body;
   if (!story.author) {
     story.author = 'Anonymous';
