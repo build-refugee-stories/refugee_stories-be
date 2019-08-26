@@ -24,7 +24,7 @@ router.post('/public', validateStory, async (req, res) => {
     const newStory = await storyDb.addStory(story);
     res.status(201).json(newStory);
   } catch (error) {
-    res.status(500).json({ message: error.message || 'Error adding story'})
+    res.status(500).json({ message: 'Error adding story'})
   }
 })
 
@@ -70,7 +70,7 @@ router.put('/stories/:id', authenticate, async (req, res) => {
       res.status(404).json({ message: 'No story of this ID exists'});
     }
   } catch (error) {
-    res.status(500).json({ message: error.message || 'Error approving story'});
+    res.status(500).json({ message: 'Error approving story'});
   }
 })
 
@@ -88,7 +88,7 @@ router.delete('/stories/:id', authenticate, async (req, res) => {
       res.status(404).json({ message: 'No story of this ID exists'});
     }
   } catch (error) {
-    res.status(500).json({ message: error.message || 'Error deleting story'});
+    res.status(500).json({ message: 'Error deleting story'});
   }
 })
 
