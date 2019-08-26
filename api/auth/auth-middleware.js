@@ -9,6 +9,7 @@ module.exports = function (req, res, next) {
       if (error) {
         res.status(401).json({message: 'Access denied. Token is invalid.'})
       } else {
+        req.userId = decodedToken.subject;
         next();
       }
     })
