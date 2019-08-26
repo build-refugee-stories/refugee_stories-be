@@ -7,19 +7,14 @@ const router = express.Router();
 router.get('/public', async (req, res) => {
   try {
     const stories = await storyDb.findApprovedStories();
-    res.status(200).json(stories.map(story => {
-      return {
-        ...story,
-        approved: story.approved === 1
-      }
-    }));
+    res.status(200).json(stories);
   } catch (error) {
     res.status(500).json({ message: 'Error getting stories'})
   }
 })
 
 //post a story
-router.post('/public', async (req, res) => {
+router.post('/public', validateStory, async (req, res) => {
   const story = req.body;
   if (!story.author) {
     story.author = 'Anonymous';
@@ -37,12 +32,7 @@ router.post('/public', async (req, res) => {
 router.get('/stories', authenticate, async (req, res) => {
   try {
     const stories = await storyDb.findStories();
-    res.status(200).json(stories.map(story => {
-      return {
-        ...story,
-        approved: story.approved === 1
-      }
-    }));
+    res.status(200).json(stories);
   } catch (error) {
     res.status(500).json({ message: 'Error getting all stories'})
   }
@@ -56,10 +46,7 @@ router.get('/stories/:id', authenticate, async (req, res) => {
     const story = await storyDb.findStoryById(id);
 
     if (story) {
-      res.status(200).json({
-        ...story,
-        approved: story.approved === 1
-      });
+      res.status(200).json(story);
     } else {
       res.status(404).json({ message: 'No story of this ID exists'});
     }
@@ -78,10 +65,7 @@ router.put('/stories/:id', authenticate, async (req, res) => {
   try {
     const updatedPost = await storyDb.updateStory(id, story);
     if (updatedPost) {
-      res.status(200).json({
-        ...updatedPost,
-        approved: updatedPost.approved === 1
-      })
+      res.status(200).json(updatedPost);
     } else {
       res.status(404).json({ message: 'No story of this ID exists'});
     }
