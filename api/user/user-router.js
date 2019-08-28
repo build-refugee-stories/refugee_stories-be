@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
     const users = await userDb.findUsers();
     res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: error.message || 'Error getting users'})
+    res.status(500).json({ message: 'Error getting users'})
   }
 })
 
@@ -18,7 +18,7 @@ router.get('/pending', async (req, res) => {
     const users = await userDb.findPendingUsers();
     res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: error.message || 'Error getting pending users'})
+    res.status(500).json({ message: 'Error getting pending users'})
   }
 })
 
@@ -35,7 +35,7 @@ router.get('/:id', async (req, res) => {
       res.status(404).json({ message: 'No user of this ID exists'});
     }
   } catch (error) {
-    res.status(500).json({ message: error.message || 'Error getting user'})
+    res.status(500).json({ message: 'Error getting user'})
   }
 })
 

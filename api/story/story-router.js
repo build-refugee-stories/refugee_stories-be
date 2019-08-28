@@ -79,11 +79,6 @@ router.get('/stories/:id', authenticate, async (req, res) => {
 //approve a story
 router.put('/stories/:id', authenticate, async (req, res) => {
   const { id } = req.params;
-  /*
-  const story = {req.body;}
-  story.approved = true;
-  story.approvedBy = req.userId;
-  */
 
   const updates = {
     approved: true,

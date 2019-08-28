@@ -10,7 +10,7 @@ module.exports = {
 }
 
 function findUsers() {
-  return db('users').select('id', 'email', 'firstName', 'lastName', 'isAdmin');
+  return db('users').select('id', 'email', 'firstName', 'lastName', 'isAdmin').orderBy('id');
 }
 
 function findUserBy(filter) {
@@ -24,7 +24,7 @@ async function addUser(user) {
 }
 
 function findPendingUsers() {
-  return db('users').where('isAdmin', false).select('id', 'email', 'firstName', 'lastName', 'isAdmin');
+  return db('users').where('isAdmin', false).select('id', 'email', 'firstName', 'lastName', 'isAdmin').orderBy('id');
 }
 
 function updateUser(id, changes) {

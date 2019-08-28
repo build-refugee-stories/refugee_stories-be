@@ -11,11 +11,11 @@ module.exports = {
 }
 
 function findStories() {
-  return db('stories')
+  return db('stories').orderBy('id');
 }
 
 function findApprovedStories() {
-  return db('stories').where('approved', true);
+  return db('stories').where('approved', true).orderBy('id');
 }
 
 function findStoryById(id) {
