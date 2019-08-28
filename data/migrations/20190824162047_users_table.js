@@ -2,8 +2,18 @@
 exports.up = function(knex) {
   return knex.schema.createTable('users', table => {
     table.increments();
-    table.string('username', 255).unique().notNullable();
-    table.string('password', 255).notNullable();
+    table.string('email')
+      .unique()
+      .notNullable();
+    table.string('password')
+      .notNullable();
+    table.string('firstName')
+      .notNullable();
+    table.string('lastName')
+      .notNullable();
+    table.boolean('isAdmin')
+      .defaultTo('false')
+      .notNullable();
   })
 };
 

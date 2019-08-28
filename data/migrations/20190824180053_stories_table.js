@@ -20,11 +20,11 @@ exports.up = function(knex) {
       .unsigned()
       .references('id')
       .inTable('users')
-      .onDelete('RESTRICT')
+      .onDelete('CASCADE')
       .onUpdate('CASCADE');
   })
 };
 
 exports.down = function(knex) {
-  return knex.schema.dropTableIfExists('users');
+  return knex.schema.dropTableIfExists('stories');
 };
