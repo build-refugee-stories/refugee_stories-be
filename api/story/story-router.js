@@ -13,6 +13,25 @@ router.get('/public', async (req, res) => {
   }
 })
 
+//get a specific approved story
+router.get('/public/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const story = await storyDb.findApprovedStoryById(id);
+
+    if (story) {
+      res.status(200).json(story);
+    } else {
+      res.status(404).json({ message: 'No story of this ID exists or story has not been approved yet' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error getting all stories'})
+  }
+})
+
+
+
 //post a story
 router.post('/public', validateStory, async (req, res) => {
   const story = req.body;
@@ -27,6 +46,8 @@ router.post('/public', validateStory, async (req, res) => {
     res.status(500).json({ message: 'Error adding story'})
   }
 })
+
+
 
 //get all submitted stories
 router.get('/stories', authenticate, async (req, res) => {

@@ -7,6 +7,7 @@ module.exports = {
   addStory,
   updateStory,
   deleteStory,
+  findApprovedStoryById,
 }
 
 function findStories() {
@@ -35,4 +36,6 @@ function deleteStory(id) {
   return db('stories').where({ id }).del();
 }
 
-
+function findApprovedStoryById(id) {
+  return db('stories').where({ id }).where('approved', true).first();
+}
