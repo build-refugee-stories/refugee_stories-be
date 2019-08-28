@@ -7,7 +7,7 @@ module.exports = {
 }
 
 function findUsers() {
-  return db('users').where('id', 'username');
+  return db('users').where('id', 'email', 'firstName', 'lastName', 'isAdmin');
 }
 
 function findUserBy(filter) {

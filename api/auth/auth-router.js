@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const validator = require('validator')
 const secrets = require('../config/secrets');
 const userDb = require('../user/user-model');
 const router = express.Router();
@@ -14,8 +15,9 @@ router.post('/register', validateRegister, async (req, res) => {
     const newUser = await userDb.addUser(user);
 
     res.status(201).json({
+      message: 'register success',
       id: newUser.id,
-      username: newUser.username
+      email: newUser.email
     });
   } catch (error) {
     res.status(500).json({ message: 'Error registering user'});
@@ -23,17 +25,24 @@ router.post('/register', validateRegister, async (req, res) => {
 })
 
 router.post('/login', validateLogin, async (req, res) => {
-  let { username, password } = req.body;
+  let { email, password } = req.body;
 
   try {
-    const user = await userDb.findUserBy({ username });
+    const user = await userDb.findUserBy({ email });
     if (user && bcrypt.compareSync(password, user.password)) {
-      const token = generateToken(user);
-      res.status(200).json({
-        message: `hello ${user.username}`,
-        userId: user.id, 
-        token
-      })
+      if (user.isAdmin) {
+        const token = generateToken(user);
+        res.status(200).json({
+          message: `hello ${user.firstName}`,
+          userId: user.id, 
+          email: user.email,
+          firstName: user.firstName, 
+          isAdmin: user.isAdmin,
+          token
+        })
+      } else {
+        res.status(401).json({ message: 'User approval status pending' });
+      }
     } else {
       res.status(401).json({ message: 'Invalid credentials' });
     }
@@ -42,16 +51,15 @@ router.post('/login', validateLogin, async (req, res) => {
   }
 })
 
-
-
-
 //middleware and misc function
 function validateRegister(req, res, next) {
   const user = req.body;
-  if (!user.username || !user.password) {
-    res.status(400).json({ message: 'Username and password are required' });
+  if (!user.email || !user.password || !user.firstName || !user.lastName) {
+    res.status(400).json({ message: 'Email, full name, and password are required' });
   } else {
-    if (user.password.length < 6) {
+    if (!validator.isEmail(user.email)) {
+      res.status(400).json({ message: 'Please provide a valid email address' });
+    } else if (user.password.length < 6) {
       res.status(400).json({ message: 'Password must be at least 6 characters long' });
     } else {
       next();
@@ -61,8 +69,8 @@ function validateRegister(req, res, next) {
 
 function validateLogin(req, res, next) {
   const user = req.body;
-  if (!user.username || !user.password) {
-    res.status(400).json({ message: 'Username and password are required' });
+  if (!user.email || !user.password) {
+    res.status(400).json({ message: 'Email and password are required' });
   } else {
     next();
   }
@@ -71,7 +79,7 @@ function validateLogin(req, res, next) {
 function generateToken(user) {
   const payload = {
     subject: user.id,
-    username: user.username
+    email: user.email
   };
 
   const options = {
