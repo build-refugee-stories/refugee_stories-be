@@ -3,7 +3,7 @@ const helmet = require('helmet');
 const cors = require('cors');
 const path = require('path');
 const bodyParser = require('body-parser');
-const apiDoc = path.join(__dirname, '../apiDoc');
+const apiDoc = path.join(__dirname, '../apidoc');
 
 const authenticate = require('./auth/auth-middleware');
 const authRouter = require('./auth/auth-router');
