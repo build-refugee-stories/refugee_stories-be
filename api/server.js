@@ -21,6 +21,6 @@ server.use('/api/', authRouter);
 server.use('/api/', storyRouter);
 server.use('/api/users', authenticate, userRouter);
 
-server.get('/', express.static(apiDoc));
+server.use('/', express.static(apiDoc));
 
 module.exports = server;
