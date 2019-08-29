@@ -6,6 +6,37 @@ const secrets = require('../config/secrets');
 const userDb = require('../user/user-model');
 const router = express.Router();
 
+/** 
+ * @api {post} /api/register Register new admin
+ * @apiName RegisterAdmin
+ * @apiGroup Auth
+ * @apiVersion 1.0.0
+ * 
+ * @apiParam {String} email User email
+ * @apiParam {String} password User password
+ * @apiParam {String} firstName user first name
+ * @apiParam {String} lastName User Last name
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP 201 Created
+ *     {
+ *        "message": "register success",
+          "id": 1,
+          "email": "email@email.com"
+ *     }
+ *
+ * @apiError MissingParameters Missing required fields 
+ * @apiError InvalidEmail Email address is invalid
+ * @apiError TakenEmail Email address is already in use 
+ * @apiError InvalidPassword Password is less than 6 characters long 
+ *
+ * @apiErrorExample {json} MissingParameters
+ *     HTTP 400 Bad Request
+ *     {
+ *        "message": "Email, full name, and password are required"
+ *     }
+*/
+
 router.post('/register', validateRegister, async (req, res) => {
   const user = req.body;
   const hash = bcrypt.hashSync(user.password, 12);
@@ -23,6 +54,43 @@ router.post('/register', validateRegister, async (req, res) => {
     res.status(500).json({ message: 'Error registering user'});
   }
 })
+
+/** 
+ * @api {post} /api/login Login admin
+ * @apiName LoginAdmin
+ * @apiGroup Auth
+ * @apiVersion 1.0.0
+ * 
+ * @apiParam {String} email User email
+ * @apiParam {String} password User password
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP 200 OK
+ *     {
+ *        "message": "hello Testuser",
+          "userId": 1,
+          "email": "email@email.com",
+          "firstName": "Testuser",
+          "isAdmin": true,
+          "token": //string
+ *     }
+ *
+ * @apiError MissingParameters Missing required fields 
+ * @apiError AdminStatusPending User has not been approved as an admin
+ * @apiError InvalidCredentials Email or password does not match
+ * 
+ * @apiErrorExample {json} AdminStatusPending
+ *    HTTP 401 Unauthorized
+ *     {
+ *        "message": "User approval status pending"
+ *     }
+ * 
+ * @apiErrorExample {json} InvalidCredentials
+      HTTP 401 Unauthorized
+ *     {
+ *        "message": "Invalid credentials"
+ *     }
+*/
 
 router.post('/login', validateLogin, async (req, res) => {
   let { email, password } = req.body;

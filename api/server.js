@@ -1,6 +1,9 @@
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
+const path = require('path');
+const bodyParser = require('body-parser');
+const apiDoc = path.join(__dirname, '../apiDoc');
 
 const authenticate = require('./auth/auth-middleware');
 const authRouter = require('./auth/auth-router');
@@ -12,13 +15,12 @@ const server = express();
 server.use(helmet());
 server.use(cors());
 server.use(express.json());
+server.use(bodyParser.urlencoded({ extended: true }));
 
 server.use('/api/', authRouter);
 server.use('/api/', storyRouter);
 server.use('/api/users', authenticate, userRouter);
 
-server.get('/', (req, res) => {
-  res.status(200).json({ message: 'server is running go catch it' });
-})
+server.get('/', express.static(apiDoc));
 
 module.exports = server;
