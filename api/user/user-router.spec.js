@@ -112,13 +112,11 @@ describe('user-router', () => {
 
     it('should return 404 error as user of id 200 does not exist', () => {
       return request(server)
-      .delete(`/api/users/200`)
-        .set('Authorization', token)
-        .then(response => {
-          expect(response.status).toBe(404);
-        })
+      .get('/api/users/200')
+      .set('Authorization', token)
+      .then(response => {
+        expect(response.status).toBe(404);
+      })
     })
   })
-
-  
 })
