@@ -307,20 +307,15 @@ router.get('/stories/:id', authenticate, async (req, res) => {
 router.put('/stories/:id', authenticate, async (req, res) => {
   const { id } = req.params;
 
-  try {
-    const story = await storyDb.findStoryById(id);
+  const updates = {
+    approved: true,
+    approvedBy: req.userId
+  }
 
-    if (story) {
-      if (story.approved) {
-        res.status(405).json({ message: 'Story has already been approved'});
-      } else {
-        const updates = {
-          approved: true,
-          approvedBy: req.userId
-        }
-        const updatedStory = await storyDb.updateStory(id, updates);
-        res.status(200).json(updatedStory);
-      }
+  try {
+    const updatedPost = await storyDb.updateStory(id, updates);
+    if (updatedPost) {
+      res.status(200).json(updatedPost);
     } else {
       res.status(404).json({ message: 'No story of this ID exists'});
     }
@@ -375,13 +370,10 @@ router.delete('/stories/:id', authenticate, async (req, res) => {
 
   try {
     const toDelete = await storyDb.findStoryById(id);
-    if (toDelete) {
-      if (toDelete.approved) {
-        res.status(405).json({ message: 'Cannot delete approved story'});
-      } else {
-        const deleted = await storyDb.deleteStory(id);
-        res.status(200).json({removed: toDelete});
-      }  
+    const deleted = await storyDb.deleteStory(id)
+
+    if (deleted) {
+      res.status(200).json({removed: toDelete});
     } else {
       res.status(404).json({ message: 'No story of this ID exists'});
     }

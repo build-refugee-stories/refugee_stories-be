@@ -184,20 +184,15 @@ router.get('/:id', async (req, res) => {
 //approve an user
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  
+  const updates = {
+    isAdmin: true,
+  }
+
   try {
-    const user = await userDb.findUserBy({ id });
-    if (user) {
-      if (user.isAdmin) {
-        res.status(405).json({ message: 'User has already been approved'});
-      } else {
-        const updates = {
-          isAdmin: true,
-        }
-        const updatedUser = await userDb.updateUser(id, updates);
-        delete updatedUser.password;
-        res.status(200).json(updatedUser);
-      }
+    const updatedUser = await userDb.updateUser(id, updates);
+    if (updatedUser) {
+      delete updatedUser.password;
+      res.status(200).json(updatedUser);
     } else {
       res.status(404).json({ message: 'No user of this ID exists'});
     }
@@ -248,15 +243,11 @@ router.delete('/:id', async (req, res) => {
 
   try {
     const toDelete = await userDb.findUserBy({ id });
-    
-    if (toDelete) {
-      if (toDelete.isAdmin) {
-        res.status(405).json({ message: 'Cannot delete approved user'});
-      } else {
-        const deleted = await userDb.deleteUser(id);
-        delete toDelete.password;
-        res.status(200).json({removed: toDelete});
-      }  
+    const deleted = await userDb.deleteUser(id);
+
+    if (deleted) {
+      delete toDelete.password;
+      res.status(200).json({removed: toDelete});
     } else {
       res.status(404).json({ message: 'No user of this ID exists'});
     }
